@@ -72,7 +72,8 @@ export class YiAdmin {
       this.permissionExpress = permissionExpress;
     }
 
-    this.siteNavMenu.add(this.modelNavMenu);
+    // 如果model中有一个需要才应该add到siteNavMenu中
+    // this.siteNavMenu.add(this.modelNavMenu);
 
     this.siteConfig = {
       siteName: siteConfig.siteName ?? 'yi-admin',
@@ -89,6 +90,7 @@ export class YiAdmin {
       clientPort: number;
     }
   } = {}): Promise<express.Router> {
+    this.ready();
     return createExpressRouter({
       yiAdmin: this,
       basePath,
@@ -111,12 +113,49 @@ export class YiAdmin {
 
     if (addToSiteNavMenu) {
       this.modelNavMenu.add(new SiteNavMenu({
+        name: modelAdmin.name,
         title: `管理 ${modelAdmin.title || modelAdmin.name}`,
         link: `#basePath#list/?modelName=${modelAdmin.name}`,
       }));
     }
   }
 
+  private readySiteNavMenu(navMenu: SiteNavMenu) {
+    const { model, name, children = [] } = navMenu;
+    if (model && name) {
+      // 如果有模型
+      if (!this.modelAdminsMap[name]) {
+        this.modelAdminsMap[name] = model;
+      }
+    }
+    if (children.length) {
+      children.forEach((item) => {
+        this.readySiteNavMenu(item);
+      });
+    }
+  }
+
+  private ready() {
+    // 整理siteNavMenu中的model
+    this.readySiteNavMenu(this.siteNavMenu);
+    // 判断是否需要将modelNavMenu添加到siteNavMenu中
+    if (this.modelNavMenu.children?.length) {
+      this.siteNavMenu.add(this.modelNavMenu);
+    }
+  }
+
+  addNavMenu(navMenu: SiteNavMenu) {
+    const modelAdmin = navMenu.model;
+
+    if (modelAdmin) {
+      // 如果模型存在，需要将model注册到modelAdminMap中
+      if (this.modelAdminsMap[modelAdmin.name]) {
+        throw new Error(`已经存在一个name为${modelAdmin.name}的model-admin实体在本站点中`);
+      }
+      this.modelAdminsMap[modelAdmin.name] = modelAdmin;
+    }
+    this.siteNavMenu.add(navMenu);
+  }
 
   static EditTypes = EditTypes;
 

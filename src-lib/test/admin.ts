@@ -153,13 +153,26 @@ myadmin.addModelAdmin(new MongooseModelAdmin({
   model: ObjModel,
 }));
 
-myadmin.addModelAdmin(new SequelizeModelAdmin({
-  name: 'sequlize-test',
-  title: '图书管理',
-  model: Book,
-  listFields: ['name', 'description', 'cover', 'json'],
+const bookManageMenu = new SiteNavMenu({
+  title: '小说管理',
+});
+bookManageMenu.add(new SiteNavMenu({
+  name: 'book-manage',
+  title: '小说管理',
+  model: new SequelizeModelAdmin({
+    name: 'book-manage',
+    title: '小说管理',
+    model: Book,
+    listFields: ['小说名', 'description', 'cover', 'json'],
+  }),
 }));
+myadmin.addNavMenu(bookManageMenu);
 
+
+myadmin.addNavMenu(new SiteNavMenu({
+  title: '测试菜单0',
+  link: 'model-admin/yi-admin-demo/edit/',
+}));
 
 myadmin.siteNavMenu.add(new SiteNavMenu({
   title: '测试菜单1',
@@ -175,7 +188,7 @@ myadmin.siteNavMenu.add(new SiteNavMenu({
   icon: 'close',
 }).add(new SiteNavMenu({
   title: '测试子菜单2',
-  link: 'https://www.baidu.com/',
+  link: 'http://www.baidu.com/',
   icon: 'ok',
 })));
 

@@ -14,6 +14,7 @@ export { SequelizeModelAdmin } from './sequelize/sequelize-model-admin';
 export {
   EditTypes,
   ListTypes,
+  FilterTypes,
 } from './lib/types';
 
 export {

@@ -217,7 +217,7 @@ export class SequelizeModelAdmin extends ModelAdminBase {
       if (typeInstance) {
         typeInstance.fieldName = key;
         if (!typeInstance.fieldNameAlias) {
-          typeInstance.fieldNameAlias = '';
+          typeInstance.fieldNameAlias = attribute.name;
         }
         if (typeInstance.componentConfig.helpText === null && attribute.helpText) {
           typeInstance.componentConfig.helpText = `${attribute.helpText}`;

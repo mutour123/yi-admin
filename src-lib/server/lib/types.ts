@@ -24,7 +24,7 @@ import { ListNumberRemoteSelectType } from './list-types/list-number-remote-sele
 import { ListStringEnumType } from './list-types/list-string-enum-type';
 import { ListStringImageType } from './list-types/list-string-image-type';
 import { ListStringRemoteSelectType } from './list-types/list-string-remote-select-type';
-
+export { FilterTypes } from '../mongoose/mongoose-filter-types';
 
 export const EditTypes = {
   EditArrayStringTagType,

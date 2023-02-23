@@ -1,7 +1,7 @@
 {
-  "name": "yi-admin",
-  "version": "0.3.1",
-  "description": "yi-admin",
+  "name": "yi-admin-yn",
+  "version": "0.3.9",
+  "description": "yi-admin-yn",
   "author": "yicheng <yicheng-me@qq.com>",
   "license": "ISC",
   "main": "lib/server/index.js",

@@ -164,7 +164,7 @@ function reset() {
       }
    }
    .form-item-wrap {
-     min-width: 120px
+     min-width: 120px;
    }
 
    .ya-help-text {

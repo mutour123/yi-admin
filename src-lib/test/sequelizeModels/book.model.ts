@@ -22,43 +22,46 @@ export const sequelizeObj = new Sequelize('', '', '', {
 
 export class Book extends Model {}
 
+
 Book.init({
   name: {
-    type: DataTypes.STRING,
+    type: new DataTypes.STRING(32),
+    name: '小说名称',
+    comment: '小说名称',
     filterType: new FilterTypes.FilterStringSearchType({
       conditionType: 'string',
     }),
   },
-  description: {
-    type: DataTypes.STRING,
-  },
   cover: {
-    type: DataTypes.JSON,
-    editType: new EditTypes.EditArrayType({
-      childrenType: new EditTypes.EditStringImageType({
-        helpText: '图片列表',
-        writeFile: EditTypes.EditStringImageType.getFileWriter({
-          folder: 'array-images',
-        }),
-        listStyleMaxHeight: '3em',
+    type: DataTypes.STRING,
+    name: '封面图片',
+    // name: '图片2',
+    comment: '封面图片',
+    editType: new EditTypes.EditStringImageType({
+      helpText: '图片列表',
+      maxFileSize: 80000 * 1000,
+      writeFile: EditTypes.EditStringImageType.getFileWriter({
+        folder: 'cover',
       }),
-      listStyleInline: true,
-      maxLength: 2,
     }),
   },
-  json: {
+  quotation: {
     type: DataTypes.TEXT,
-    editType: new EditTypes.EditStringWangEditorType({
-      minLength: 2,
-      maxLength: 2,
-      placeholder: 'ddd',
-      uploadImgMaxSize: 1,
-      writeFile: async (file) => {
-        return {
-          url: '',
-        };
-      },
-    }),
+    name: '推荐语',
+    comment: '引导语（推荐语、主编说）',
+  },
+  serialStatus: {
+    type: DataTypes.ENUM,
+    values: ['1', '2'],
+    defaultValue: '1', // 默认连载中1, 2是完结
+    name: '连载状态',
+    comment: '连载状态: 1，连载中; 2, 完结',
+  },
+  offShelf: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false, // 默认小说是上架状态
+    name: '是否下载',
+    comment: '下架状态： true；上架；为false; 默认为false，上架中',
   },
 }, {
   sequelize: sequelizeObj,
