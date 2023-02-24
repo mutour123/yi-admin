@@ -1,9 +1,22 @@
+import { createHash } from 'crypto';
+import { readFileSync } from 'fs';
 import { Model, DataTypes, Sequelize } from 'sequelize';
 import { EditTypes } from '../../server';
 import { FilterTypes } from '../../server/mongoose/mongoose-filter-types';
-export const sequelizeObj = new Sequelize('', '', '', {
-  host: '',
-  port: 0,
+import { getEnv } from '../get-env';
+import { File } from 'formidable';
+import { extname } from 'path';
+import { putOss } from '../utils/ali-oss';
+
+const name = getEnv('MYSQL_DATABASE_NAME');
+const user = getEnv('MYSQL_DATABASE_USER');
+const password = getEnv('MYSQL_DATABASE_PASSWORD');
+const host = getEnv('MYSQL_DATABASE_HOST');
+const port = getEnv('MYSQL_DATABASE_PORT');
+
+export const sequelizeObj = new Sequelize(name, user, password, {
+  host,
+  port: Number(port),
   dialect: 'mysql', /* 选择 'mysql' | 'mariadb' | 'postgres' | 'mssql' 其一 */
   dialectOptions: {
     charset: 'utf8mb4',
@@ -40,9 +53,20 @@ Book.init({
     editType: new EditTypes.EditStringImageType({
       helpText: '图片列表',
       maxFileSize: 80000 * 1000,
-      writeFile: EditTypes.EditStringImageType.getFileWriter({
-        folder: 'cover',
-      }),
+      prefix: getEnv('OSS_PREFIX'),
+      writeFile: async function(file: File) : Promise<{
+        url: string;
+      }> {
+        const fileData = readFileSync(file.filepath);
+        const hash = createHash('md5').update(fileData).digest('hex');
+        const extName = extname(file.originalFilename!);
+
+        const fileName = `/book-cover/${hash}_${fileData.length}${extName}`;
+        const putRst = await putOss(fileName, fileData);
+        return {
+          url: putRst.name,
+        };
+      },
     }),
   },
   quotation: {

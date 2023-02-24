@@ -42,6 +42,7 @@ const props = defineProps({
   config: { type: Object as PropType<{
     maxFileSize?: number;
     mimeType?: string;
+    prefix?: string;
   }>, default() {
     return {
       maxFileSize: 10 * 1000,
@@ -63,7 +64,12 @@ const props = defineProps({
 });
 
 const value = computed((): string => {
-  return props.editFormData[props.objectKey] as string || '';
+  const { prefix } = props.config;
+  const path = props.editFormData[props.objectKey] as string || '';
+  if (path && prefix) {
+    return `${prefix}/${path}`;
+  }
+  return path;
 });
 
 const $message = useMessage();

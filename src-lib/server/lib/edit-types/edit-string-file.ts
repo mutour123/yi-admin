@@ -15,6 +15,7 @@ export type EditStringFileTypeConfig = EditBaseTypeConfig & {
     * https://www.w3school.com.cn/media/media_mimeref.asp
     */
    mimeType?: string;
+   prefix?: string;
 
    /**
     * 文件上传，此函数调用完毕后会自动清理掉暂存文件
@@ -40,6 +41,7 @@ export class EditStringFileType extends EditBaseType {
        * https://www.w3school.com.cn/media/media_mimeref.asp
        */
       mimeType: string;
+      prefix?: string;
    } = {
       ...this.componentConfig,
       placeholder: '',
@@ -62,6 +64,8 @@ export class EditStringFileType extends EditBaseType {
     if (config.mimeType !== undefined) {
       this.componentConfig.mimeType = config.mimeType;
     }
+
+    this.componentConfig.prefix = config.prefix || '';
 
     if (typeof config.writeFile !== 'function') throw new Error('writeFile 必须是一个合适的函数');
     this.writeFile = config.writeFile;

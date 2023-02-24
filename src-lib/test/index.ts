@@ -1,13 +1,10 @@
 import express from 'express';
-import Koa from 'koa';
 import mongoose from 'mongoose';
 import { config } from 'dotenv';
 import { resolve } from 'path';
 import myadmin from './admin';
 import myadmin2 from './admin2';
-import uploadsRouter from './uploads-router';
 import { getEnv } from './get-env';
-import koaConnect from 'koa-connect';
 import { createServer } from 'http';
 import { Book, sequelizeObj } from './sequelizeModels/book.model';
 
@@ -16,23 +13,6 @@ config();
 
 const MONGODB_URI = getEnv('MONGODB_URI', 'mongodb://localhost:27017/');
 
-export default async function createApp(): Promise<Koa> {
-  await mongoose.connect(MONGODB_URI, { });
-
-  const app = new Koa();
-
-  const adminRouter1 = await myadmin.createExpressRouter('/router1/');
-  const adminRouter2 = await myadmin2.createExpressRouter('/router2/');
-
-  // @ts-ignore
-  app.use(koaConnect((...t) => adminRouter1(...t)));
-  // @ts-ignore
-  app.use(koaConnect((...t) => adminRouter2(...t)));
-
-  app.use(uploadsRouter.routes());
-
-  return app;
-}
 
 export async function createApp2() {
   // 连接mongoosedb数据库
@@ -61,6 +41,11 @@ export async function createApp2() {
   app.use('/test/', await myadmin.createExpressRouter('/test/', { }));
 
   app.use('/test2/', await myadmin2.createExpressRouter('/test2/', { }));
+
+  app.use('/test-post', async (req, res) => {
+    console.log('res:===', req.body);
+    res.send('ok');
+  });
 
   return server;
 }

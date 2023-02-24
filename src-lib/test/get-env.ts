@@ -1,3 +1,5 @@
+import dotenv from 'dotenv';
+dotenv.config();
 /**
  * 获取环境变量值
  * @param name
